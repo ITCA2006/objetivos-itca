@@ -1,0 +1,12 @@
+OBJETIVOS 2027 ITCA - versión Netlify
+
+Archivos:
+- index.html .................. la web
+- netlify/functions/datos.mjs . el servidor (guarda los datos y controla las contraseñas)
+- netlify.toml / package.json . configuración para Netlify
+
+Usuarios y contraseñas:
+Se configuran en Netlify > tu proyecto > Project configuration > Environment variables,
+con una variable llamada ANALISTAS y este formato (separados por coma):
+  mleonelli@itca.edu.ar:CLAVE1,mporto@itca.edu.ar:CLAVE2,ggianfrate@itca.edu.ar:CLAVE3
+Después de cambiarla: Deploys > Trigger deploy > Deploy site.
