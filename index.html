@@ -322,6 +322,9 @@ table.dia1 td small{color:inherit;opacity:.7;font-weight:500}
 .row-btns{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 input[type="password"]{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink);max-width:100%}
 .hist .row-btns .btn{padding:7px 12px;font-size:12px}
+.cmp-ctrl{gap:12px}
+.cmp-ctrl .fields{max-width:520px}
+input[type="date"]{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink);color-scheme:dark}
 /* ---- escala tipográfica única ---- */
 .brand h1{font-size:24px}
 h2{font-size:14px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
@@ -390,7 +393,9 @@ img{max-width:100%}
       <nav class="tabs" id="tabs">
         <a href="#resumen" data-view="resumen">Resumen</a>
         <a href="#tabla" data-view="tabla">Tabla</a>
+        <a href="#comparacion" data-view="comparacion">Comparación</a>
         <a href="#cargar" data-view="cargar">Cargar reporte</a>
+        <a href="#respaldo" data-view="respaldo">Respaldo</a>
       </nav>
     </div>
     <div class="months" id="months" role="group" aria-label="Mes"></div>
@@ -449,6 +454,8 @@ function selLabel(ix){return ix.length===12?"todo el ciclo":ix.map(k=>MESES[k].l
 function aggSel(sede,ix){const t={des:0,objV:0,datos:null,ventas:null,pD:0,pV:0};
   for(const i of ix){const c=calc(sede,i),p=paceOf(i);t.des+=c.des||0;t.objV+=c.objV||0;t.pD+=(c.des||0)*p;t.pV+=(c.objV||0)*p;if(c.datos!=null)t.datos=(t.datos||0)+c.datos;if(c.ventas!=null)t.ventas=(t.ventas||0)+c.ventas}
   t.convEst=t.des?t.objV/t.des:null;t.paceD=t.des?t.pD/t.des:0;t.paceV=t.objV?t.pV/t.objV:0;return fin(t)}
+/* ventas día por día del ciclo anterior (ago 2025 – jul 2026), solo cantidades por sede */
+const ANTERIOR={"2026_06":{"05":{"CENTRAL":3,"SANISIDRO":1,"CONGRESO":1},"02":{"BEIRO":1,"CONSTI":1},"12":{"CENTRAL":2,"BANFIELD":1,"CONGRESO":1},"19":{"CENTRAL":2,"CONGRESO":1,"CONSTI":2},"01":{"CENTRAL":2},"06":{"CONSTI":1},"04":{"CONSTI":1},"08":{"CENTRAL":1},"11":{"BANFIELD":1,"CENTRAL":2,"BEIRO":2},"09":{"CENTRAL":3,"BANFIELD":1,"OESTE":1},"18":{"CENTRAL":3},"10":{"CENTRAL":1,"BANFIELD":1},"24":{"CENTRAL":1},"16":{"CENTRAL":1,"CONSTI":1,"CONGRESO":1},"03":{"CENTRAL":1},"13":{"CENTRAL":2},"17":{"CENTRAL":2,"CONGRESO":1},"22":{"CENTRAL":1},"27":{"CENTRAL":2,"BANFIELD":1},"30":{"CONSTI":3,"CENTRAL":7,"CONGRESO":1},"29":{"CENTRAL":2},"23":{"CENTRAL":1,"OESTE":1},"25":{"CENTRAL":1},"26":{"BANFIELD":1,"CENTRAL":1}},"2026_07":{"06":{"CENTRAL":1},"01":{"CONGRESO":2},"02":{"CENTRAL":1,"CONSTI":1},"16":{"CENTRAL":2,"CONGRESO":1},"03":{"CENTRAL":1,"BANFIELD":1},"30":{"SANISIDRO":1,"BANFIELD":1},"10":{"CENTRAL":1,"BANFIELD":1},"04":{"OESTE":1},"13":{"CENTRAL":1},"15":{"CENTRAL":2},"08":{"CENTRAL":2},"11":{"CONGRESO":1,"CONSTI":1},"14":{"OESTE":1},"27":{"CENTRAL":2},"28":{"OESTE":1}},"2026_05":{"19":{"CONGRESO":1,"OESTE":1,"CENTRAL":2},"26":{"CENTRAL":1,"BANFIELD":2},"28":{"BANFIELD":1,"CENTRAL":2},"20":{"BEIRO":1,"CENTRAL":1},"22":{"CONSTI":1,"CENTRAL":1},"21":{"CENTRAL":1,"CONGRESO":1,"BANFIELD":1},"30":{"CENTRAL":3,"BANFIELD":1},"29":{"BANFIELD":1,"CENTRAL":6,"CONGRESO":1},"27":{"OESTE":1,"CENTRAL":1},"12":{"CENTRAL":10,"CONSTI":1},"13":{"CENTRAL":6,"OESTE":2,"CONSTI":5,"SANISIDRO":1},"05":{"CENTRAL":4,"CONGRESO":1,"BANFIELD":1},"14":{"CENTRAL":5},"07":{"CONGRESO":1,"CENTRAL":4,"BEIRO":2,"OESTE":1,"CONSTI":1},"06":{"CONSTI":3,"CENTRAL":3,"CONGRESO":2,"BEIRO":1,"OESTE":1},"04":{"CENTRAL":1},"08":{"CENTRAL":3,"SANISIDRO":1},"11":{"CENTRAL":5},"02":{"OESTE":2,"CONSTI":2},"16":{"BANFIELD":1,"CENTRAL":2},"15":{"CENTRAL":2}},"2025_10":{"01":{"CONSTI":1,"CONGRESO":2},"10":{"CENTRAL":4,"CONSTI":1},"02":{"CENTRAL":5,"BANFIELD":1},"03":{"CENTRAL":3,"BEIRO":1},"07":{"BANFIELD":1,"CENTRAL":4},"08":{"SANISIDRO":1,"CONSTI":1,"CENTRAL":3},"31":{"SANISIDRO":2,"CENTRAL":17,"BEIRO":2,"BANFIELD":4,"CONSTI":1},"14":{"SANISIDRO":1,"CENTRAL":3},"30":{"CENTRAL":5,"CONSTI":2,"SANISIDRO":1,"CONGRESO":1,"BANFIELD":1},"22":{"CENTRAL":3,"CONSTI":2},"29":{"CONSTI":5,"CENTRAL":8},"04":{"CONGRESO":1,"CENTRAL":1},"23":{"CENTRAL":3,"BEIRO":1},"06":{"CENTRAL":1},"11":{"CENTRAL":2},"24":{"CENTRAL":6,"BANFIELD":1,"CONSTI":1},"09":{"CENTRAL":4},"15":{"CONSTI":2,"CENTRAL":1},"13":{"CENTRAL":4},"17":{"CENTRAL":2,"CONGRESO":1,"CONSTI":1},"20":{"CENTRAL":5},"18":{"CENTRAL":1,"BEIRO":1,"CONSTI":1},"16":{"CENTRAL":2},"21":{"CENTRAL":1,"BANFIELD":1},"28":{"SANISIDRO":1,"CENTRAL":3,"CONGRESO":1,"CONSTI":1,"BANFIELD":1},"27":{"CENTRAL":4}},"2025_08":{"21":{"CENTRAL":2,"CONSTI":3,"CONGRESO":1},"19":{"CONSTI":2,"BEIRO":1,"CENTRAL":2,"BANFIELD":2},"05":{"CENTRAL":4,"SANISIDRO":1,"BANFIELD":3},"07":{"CENTRAL":6,"BANFIELD":1,"CONGRESO":1,"SANISIDRO":1},"12":{"BANFIELD":3,"CENTRAL":1},"29":{"CENTRAL":12,"BANFIELD":2,"BEIRO":3,"SANISIDRO":1,"CONSTI":2,"CONGRESO":2},"09":{"CENTRAL":3,"CONSTI":2,"BEIRO":1},"20":{"BANFIELD":1,"CENTRAL":2,"BEIRO":1},"14":{"CENTRAL":4},"11":{"CENTRAL":5},"08":{"CENTRAL":3},"06":{"SANISIDRO":1,"CONGRESO":1,"CENTRAL":3,"BANFIELD":1},"30":{"CENTRAL":9,"CONSTI":3,"BEIRO":1,"SANISIDRO":1},"18":{"CENTRAL":5},"28":{"CENTRAL":11,"CONSTI":1,"BANFIELD":2,"CONGRESO":1,"BEIRO":1,"SANISIDRO":2},"13":{"BANFIELD":2,"CONSTI":1,"CENTRAL":1},"22":{"CENTRAL":4,"CONSTI":1},"23":{"CENTRAL":2,"SANISIDRO":1},"26":{"CONGRESO":1,"CENTRAL":1,"CONSTI":1,"BANFIELD":1},"27":{"CENTRAL":1,"BANFIELD":1,"CONSTI":1},"25":{"CENTRAL":2}},"2025_09":{"04":{"CONSTI":1,"SANISIDRO":1,"BANFIELD":1},"05":{"BANFIELD":2,"CONSTI":1,"CENTRAL":1},"10":{"CONSTI":1,"CENTRAL":2},"01":{"CENTRAL":3},"02":{"SANISIDRO":1,"CENTRAL":1},"12":{"CENTRAL":5},"03":{"CENTRAL":2},"20":{"CENTRAL":3},"30":{"CONSTI":8,"CENTRAL":6,"BANFIELD":4},"15":{"CENTRAL":3},"27":{"CONSTI":1,"BEIRO":1},"19":{"CENTRAL":5,"CONSTI":1},"06":{"BANFIELD":1},"11":{"CENTRAL":3},"08":{"CENTRAL":2},"18":{"CENTRAL":4,"BANFIELD":1},"09":{"CENTRAL":2},"29":{"CENTRAL":8},"24":{"CENTRAL":4},"22":{"CENTRAL":4},"16":{"CENTRAL":1,"CONSTI":1},"17":{"CENTRAL":2},"26":{"CENTRAL":7,"CONSTI":1},"23":{"CENTRAL":2,"CONGRESO":1},"25":{"CENTRAL":2,"BANFIELD":1}},"2025_11":{"05":{"BANFIELD":4,"CENTRAL":10,"CONSTI":3,"BEIRO":3,"SANISIDRO":3},"07":{"CONGRESO":2,"CENTRAL":7},"20":{"CENTRAL":4,"BANFIELD":1},"12":{"CENTRAL":4,"BANFIELD":1},"01":{"CENTRAL":4},"26":{"CENTRAL":11,"BEIRO":2,"BANFIELD":1},"14":{"BEIRO":1,"CENTRAL":2,"BANFIELD":1},"13":{"CENTRAL":3,"BEIRO":1,"BANFIELD":1},"11":{"CENTRAL":2,"BANFIELD":1},"04":{"CENTRAL":12,"BANFIELD":1,"BEIRO":1,"CONSTI":1},"18":{"CENTRAL":5,"CONSTI":2,"BANFIELD":1},"06":{"CENTRAL":12,"CONGRESO":2},"19":{"CENTRAL":3,"BANFIELD":2},"08":{"CONSTI":5,"CONGRESO":1,"CENTRAL":7},"03":{"CENTRAL":3},"28":{"CENTRAL":12,"SANISIDRO":3,"CONSTI":2,"BANFIELD":6,"BEIRO":1},"29":{"CENTRAL":3,"BANFIELD":1,"CONGRESO":1,"CONSTI":1},"10":{"CENTRAL":5},"15":{"CONSTI":2,"CENTRAL":4},"27":{"CENTRAL":10,"CONSTI":1,"SANISIDRO":1,"BANFIELD":3},"30":{"CENTRAL":2},"17":{"CENTRAL":1},"25":{"CENTRAL":2,"BANFIELD":1},"22":{"BANFIELD":3,"CONSTI":1,"CONGRESO":1}},"2025_12":{"09":{"CENTRAL":5,"BANFIELD":1},"03":{"CONGRESO":1,"CENTRAL":4,"BANFIELD":1,"SANISIDRO":1},"30":{"BEIRO":3,"CONSTI":5,"CONGRESO":4,"CENTRAL":13,"BANFIELD":2,"SANISIDRO":1},"19":{"SANISIDRO":1,"CONSTI":2},"11":{"SANISIDRO":1,"BANFIELD":2,"CENTRAL":4},"01":{"CENTRAL":3},"12":{"CENTRAL":5,"BANFIELD":4},"05":{"CONSTI":1,"CENTRAL":8,"SANISIDRO":1,"BANFIELD":1},"26":{"CENTRAL":12,"BANFIELD":3,"BEIRO":3},"04":{"CENTRAL":4,"CONSTI":2,"BANFIELD":1},"16":{"CENTRAL":6,"BANFIELD":1,"SANISIDRO":2},"02":{"CENTRAL":6,"SANISIDRO":1},"06":{"CENTRAL":2,"CONSTI":1},"29":{"CENTRAL":9},"23":{"CENTRAL":6,"BANFIELD":2,"CONSTI":1,"SANISIDRO":1},"22":{"CENTRAL":13},"18":{"CENTRAL":6,"CONSTI":1},"13":{"CENTRAL":5,"SANISIDRO":1},"27":{"SANISIDRO":1,"CENTRAL":4,"BANFIELD":1},"10":{"CENTRAL":4},"15":{"CENTRAL":2},"17":{"BANFIELD":1},"20":{"CENTRAL":2},"24":{"CONSTI":1}},"2026_01":{"17":{"CENTRAL":2,"BANFIELD":1},"03":{"CONSTI":1,"CENTRAL":6,"SANISIDRO":1},"05":{"CENTRAL":3,"BANFIELD":2,"SANISIDRO":2},"02":{"CENTRAL":9,"CONSTI":1,"OESTE":1,"BANFIELD":2,"SANISIDRO":1},"27":{"CENTRAL":4,"BEIRO":1,"OESTE":4,"SANISIDRO":1,"CONGRESO":1,"BANFIELD":5},"13":{"CENTRAL":11,"BEIRO":1},"08":{"CENTRAL":9,"OESTE":1},"16":{"CENTRAL":11,"OESTE":2,"CONSTI":1},"23":{"CONSTI":1,"CENTRAL":2,"BANFIELD":2,"SANISIDRO":2,"CONGRESO":1},"06":{"BEIRO":1,"CENTRAL":4,"BANFIELD":1},"07":{"CENTRAL":3,"OESTE":2,"BEIRO":1,"CONSTI":1},"12":{"CENTRAL":7,"CONSTI":1},"14":{"CENTRAL":8,"OESTE":1,"BANFIELD":1,"CONGRESO":1,"CONSTI":1},"22":{"SANISIDRO":2,"CENTRAL":7,"CONSTI":1},"31":{"CONSTI":3,"SANISIDRO":5,"CONGRESO":4,"CENTRAL":10,"OESTE":4,"BANFIELD":4},"09":{"CENTRAL":7,"OESTE":3,"BANFIELD":2,"CONSTI":2},"26":{"CENTRAL":6},"20":{"CENTRAL":7,"CONGRESO":1},"30":{"OESTE":3,"CENTRAL":12,"CONSTI":2,"CONGRESO":3,"BANFIELD":1},"10":{"CENTRAL":3},"28":{"CENTRAL":7,"OESTE":1,"SANISIDRO":1,"CONSTI":2,"CONGRESO":1},"19":{"CENTRAL":2},"29":{"OESTE":2,"CENTRAL":6,"SANISIDRO":3,"BANFIELD":2,"CONSTI":5,"BEIRO":1,"CONGRESO":1},"24":{"CONSTI":2,"CENTRAL":2,"SANISIDRO":1,"BANFIELD":1},"15":{"CENTRAL":5,"BANFIELD":2,"CONSTI":2},"18":{"CENTRAL":1},"21":{"CENTRAL":6,"BANFIELD":2,"SANISIDRO":1}},"2026_02":{"03":{"CONGRESO":1,"CENTRAL":7,"OESTE":2,"BEIRO":2},"06":{"CENTRAL":5,"CONSTI":1,"BEIRO":2,"CONGRESO":1},"10":{"CENTRAL":8,"BANFIELD":1,"CONSTI":1,"BEIRO":1},"13":{"CONSTI":1,"BEIRO":2,"CENTRAL":5,"SANISIDRO":1,"BANFIELD":3},"02":{"CENTRAL":7},"12":{"CONSTI":4,"BEIRO":1,"CENTRAL":8,"CONGRESO":1,"BANFIELD":1,"SANISIDRO":2},"19":{"CONSTI":1,"CENTRAL":5,"BANFIELD":2,"OESTE":1,"SANISIDRO":1,"BEIRO":1,"CONGRESO":1},"04":{"CONSTI":1,"CENTRAL":8,"BEIRO":1},"26":{"CENTRAL":11,"OESTE":4,"CONSTI":5,"BANFIELD":2,"BEIRO":3,"SANISIDRO":1,"CONGRESO":1},"09":{"CENTRAL":6},"24":{"CENTRAL":15,"BANFIELD":10,"OESTE":1,"CONSTI":3,"CONGRESO":3,"SANISIDRO":1,"BEIRO":2},"21":{"CENTRAL":4,"BANFIELD":1,"OESTE":1},"28":{"CENTRAL":15,"CONSTI":7,"OESTE":8,"BANFIELD":5,"CONGRESO":4,"SANISIDRO":1},"05":{"CENTRAL":5,"OESTE":1,"BEIRO":2,"CONGRESO":1,"CONSTI":1},"27":{"CENTRAL":18,"CONSTI":3,"OESTE":2,"BANFIELD":6,"SANISIDRO":3,"BEIRO":5,"CONGRESO":1},"11":{"CENTRAL":6,"BEIRO":2,"SANISIDRO":1,"BANFIELD":1},"20":{"CENTRAL":10,"CONSTI":2,"CONGRESO":3,"OESTE":1,"BANFIELD":2,"SANISIDRO":2,"BEIRO":1},"07":{"BEIRO":1,"OESTE":1,"CONSTI":1,"CENTRAL":3},"14":{"BEIRO":1,"CENTRAL":4,"CONGRESO":1,"BANFIELD":2},"18":{"BEIRO":1,"CONGRESO":1,"SANISIDRO":1,"CENTRAL":4,"BANFIELD":2},"25":{"BEIRO":1,"CENTRAL":4,"CONSTI":3,"OESTE":1},"23":{"CENTRAL":9}},"2026_03":{"03":{"CENTRAL":17,"BANFIELD":2,"CONGRESO":3},"12":{"CENTRAL":6,"BANFIELD":1,"OESTE":2,"SANISIDRO":1,"BEIRO":1,"CONSTI":1},"21":{"CENTRAL":2,"CONSTI":1,"BEIRO":1},"13":{"CENTRAL":7,"BANFIELD":2,"CONGRESO":1},"04":{"OESTE":3,"CENTRAL":8,"CONGRESO":1,"BANFIELD":3,"BEIRO":1},"06":{"CENTRAL":7,"CONGRESO":1,"OESTE":1,"BANFIELD":1},"02":{"CENTRAL":12},"19":{"CENTRAL":11,"OESTE":1},"05":{"CENTRAL":6,"OESTE":1,"BANFIELD":4,"CONGRESO":1},"16":{"CENTRAL":13},"10":{"BANFIELD":3,"CENTRAL":9,"CONGRESO":2,"BEIRO":1},"08":{"CENTRAL":2},"11":{"CENTRAL":11,"BANFIELD":2,"BEIRO":1},"07":{"CENTRAL":1},"09":{"CENTRAL":10},"26":{"CENTRAL":9,"CONGRESO":1,"OESTE":1},"14":{"BANFIELD":2,"CENTRAL":4,"OESTE":3,"CONGRESO":1},"17":{"BANFIELD":1,"CONSTI":1,"CENTRAL":4},"30":{"CENTRAL":4},"18":{"CENTRAL":6,"BANFIELD":2},"27":{"CENTRAL":8,"BANFIELD":1,"OESTE":2,"CONSTI":1},"20":{"CENTRAL":5,"BANFIELD":1},"31":{"CENTRAL":18,"CONSTI":1,"BANFIELD":3,"OESTE":3,"CONGRESO":1},"25":{"CENTRAL":3,"SANISIDRO":2},"28":{"CENTRAL":1}},"2026_04":{"23":{"CONSTI":2,"CENTRAL":3},"16":{"CENTRAL":7,"CONSTI":1,"CONGRESO":1,"OESTE":1},"01":{"CENTRAL":3,"BANFIELD":1,"OESTE":1},"24":{"CENTRAL":6,"CONSTI":2,"OESTE":1},"28":{"CONGRESO":3,"CENTRAL":7,"CONSTI":1,"OESTE":1},"29":{"CENTRAL":6,"BANFIELD":1,"OESTE":1,"CONGRESO":1},"10":{"CONGRESO":1,"CENTRAL":3,"CONSTI":1},"14":{"CENTRAL":5,"CONSTI":2,"CONGRESO":1,"BANFIELD":1},"06":{"CENTRAL":5},"22":{"CENTRAL":5,"CONSTI":1,"BANFIELD":1},"07":{"BANFIELD":1,"CONSTI":1,"CENTRAL":2},"08":{"CENTRAL":4,"OESTE":2,"CONSTI":1},"13":{"CENTRAL":5},"11":{"CENTRAL":2},"25":{"CENTRAL":1,"BANFIELD":1},"18":{"CENTRAL":2,"BEIRO":1,"CONSTI":1},"09":{"CONGRESO":2},"30":{"CENTRAL":10,"SANISIDRO":1,"OESTE":1},"17":{"BANFIELD":2,"CENTRAL":5,"CONGRESO":1,"CONSTI":1},"21":{"CENTRAL":2,"CONSTI":2,"BEIRO":1},"27":{"CENTRAL":2},"15":{"CENTRAL":2,"SANISIDRO":1},"20":{"CENTRAL":1}}};
 const SERIES=["var(--accent)","var(--target)","var(--ok)","var(--s4)","var(--bad)","var(--s6)","var(--warn)","var(--s8)"];
 
 /* ---------- render ---------- */
@@ -484,9 +491,9 @@ function gauge(lbl,val,obj,p,pace){const R=26,C=2*Math.PI*R,len=p==null?0:Math.m
 function renderMonths(){const el=$("#months");const ix=selIdx();
   el.innerHTML=`<button type="button" data-todos="1" aria-pressed="${ix.length===12}">Todos</button><span class="msep"></span>`+MESES.map((m,i)=>{const fut=m.key>todayKey;if(fut&&!S.showFut&&!(ix.includes(i)&&ix.length<12))return "";return `<button type="button" data-mes="${i}" aria-pressed="${ix.includes(i)}" class="${hasData(i)?"has":""} ${m.key===todayKey?"hoy":""}">${m.lbl} ${String(m.y).slice(2)}</button>`}).join("")+(MESES.some(m=>m.key>todayKey)?`<button type="button" class="more" data-more="1" aria-expanded="${!!S.showFut}" title="${S.showFut?"Ocultar los meses que vienen":"Ver los meses que vienen"}">${S.showFut?"‹ menos":"···"}</button>`:"")+
   `<span class="mhint">${ix.length===1?"Tocá otro mes para compararlos":ix.length===12?"Comparando todo el ciclo":`Comparando ${ix.length} meses · tocá uno para sacarlo`}</span>`;
-  el.hidden=S.view==="cargar"}
+  el.hidden=S.view==="cargar"||S.view==="respaldo"||S.view==="comparacion"}
 function puedeEditar(){return !!(S.logged&&S.canWrite)}
-function renderTabs(){document.querySelectorAll("#tabs a").forEach(a=>{a.setAttribute("aria-current",a.dataset.view===S.view?"page":"false");if(a.dataset.view==="cargar")a.hidden=!puedeEditar()});
+function renderTabs(){document.querySelectorAll("#tabs a").forEach(a=>{a.setAttribute("aria-current",a.dataset.view===S.view?"page":"false");if(a.dataset.view==="cargar"||a.dataset.view==="respaldo")a.hidden=!puedeEditar()});
   const m=document.getElementById("modo");if(m)m.textContent=S.logged?`${S.logged} · edición`:"Solo lectura";
   const lb=document.getElementById("login-btn");if(lb)lb.textContent=S.logged?"Salir":"Ingresar";renderModal()}
 function renderModal(){const el=document.getElementById("modal");if(!el)return;if(!S.loginOpen){el.innerHTML="";return}
@@ -507,6 +514,8 @@ function render(){
   renderMonths();
   if(S.view==="tabla")app.innerHTML=viewTabla();
   else if(S.view==="cargar")app.innerHTML=viewCargar();
+  else if(S.view==="respaldo")app.innerHTML=viewRespaldo();
+  else if(S.view==="comparacion"){app.innerHTML=viewComparacion();drawRango();drawAnterior()}
   else if(selIdx().length>1){app.innerHTML=viewComparar();drawCompare()}
   else{app.innerHTML=viewResumen();drawCharts()}
 }
@@ -584,6 +593,10 @@ function overlayChart(box,sede,ix,key){const cv=box.querySelector(".cv"),keys=bo
   s+="</svg>";cv.innerHTML=s;keys.innerHTML=series.map((se,j)=>`<span><i style="background:${SERIES[j%SERIES.length]}"></i>${se.m.lbl}</span>`).join("");
   const sw=(w-L-R)/30;bindHover(box,cv.querySelector("svg"),w,Array.from({length:31},(_,k)=>({x0:x(k+1)-sw/2,x1:x(k+1)+sw/2,html:`<b>Día ${k+1}</b>`+series.map(se=>`<br>${se.m.lbl}: ${se.pts[k]!=null?fPct(se.pts[k]):"—"}`).join("")})))}
 
+/* cuatrimestres del ciclo: Q1 ago–nov, Q2 dic–mar, Q3 abr–jul */
+function bloqueQ(i){const q=Math.floor(i/4),ix=[q*4,q*4+1,q*4+2,q*4+3];const a=aggSel("TOTAL",ix);
+  const v=a.ventas||0,f=Math.max(a.objV-v,0),rango=`${MESES[ix[0]].lbl}–${MESES[ix[3]].lbl}`;
+  return `<div class="kpi panel"><div class="lbl">Para llegar al Q${q+1}</div><div class="big num">${fInt(f)}<span> ventas</span></div>${bar(a.alcV,0,"")}<div class="sub">${f>0?`Faltan <b>${fInt(f)}</b> para la meta del Q${q+1} (${rango}): <b>${fInt(v)}</b> de ${fInt(a.objV)}`:`Meta del Q${q+1} (${rango}) cumplida: <b>${fInt(v)}</b> de ${fInt(a.objV)}`}</div></div>`}
 function viewResumen(){
   const i=defaultMes(),m=MESES[i],pace=paceOf(i),t=calc("TOTAL",i);
   const stV=status(t.alcV,pace),stD=status(t.alcD,pace);
@@ -601,6 +614,7 @@ function viewResumen(){
     <div class="kpi panel"><div class="lbl">Ventas</div><div class="big num">${fInt(t.ventas)}<span> de ${fInt(t.objV)}</span></div>${bar(t.alcV,pace,stV.c)}<div class="sub">${hoyTxt(t.objV,t.ventas)}</div></div>
     <div class="kpi panel"><div class="lbl">Datos</div><div class="big num">${fInt(t.datos)}<span> de ${fInt(t.des)}</span></div>${bar(t.alcD,pace,stD.c)}<div class="sub">${hoyTxt(t.des,t.datos)}</div></div>
     ${ritmo}
+    ${bloqueQ(i)}
   </div></section>`;
   const cards=ordenSedes().map(([s,n])=>simpleRow(s,n,i,pace,esActual,quedan)).join("");
   const corto=n=>n.replace(/^Sede /,"");
@@ -690,8 +704,123 @@ function drawCharts(){
     svg.addEventListener("pointermove",e=>{const r=svg.getBoundingClientRect(),sy=(e.clientY-r.top)*h/r.height;const it=items.find(o=>sy>=o.y0&&sy<o.y1);if(!it){tipOff(box);return}const br=box.getBoundingClientRect();tipOn(box,it.html,e.clientX-br.left,e.clientY-br.top)});
     svg.addEventListener("pointerleave",()=>tipOff(box))})();
   insightsSingle();
+  drawAnterior();
 }
 
+/* ---------- pestaña Comparación: rango de fechas vs. el año pasado ---------- */
+const CICLO_INI=new Date(MESES[0].y,MESES[0].m-1,1),CICLO_FIN=new Date(MESES[11].y,MESES[11].m-1,MESES[11].days);
+const isoD=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const parseD=v=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||"");return m?new Date(+m[1],+m[2]-1,+m[3]):null};
+const fD=d=>`${d.getDate()}/${d.getMonth()+1}`;
+const fDL=d=>`${d.getDate()} de ${MES_LARGO[MES_N[d.getMonth()]]}`;
+function hoyD(){return new Date(today.getFullYear(),today.getMonth(),today.getDate())}
+// último día con datos de este año: el último día cargado del mes en curso, o el fin del mes anterior
+function ultimoDisponible(){const k=MES_IDX[todayKey];if(k==null)return CICLO_FIN;const u=ultimoCargado(todayKey);if(u)return new Date(today.getFullYear(),today.getMonth(),u);return new Date(today.getFullYear(),today.getMonth(),0)}
+function atajo(t){const h=hoyD();let a,b=h;
+  if(t==="7"){a=new Date(h);a.setDate(h.getDate()-6)}
+  else if(t==="q"){const i=MES_IDX[todayKey]??0,q=Math.floor(i/4)*4;a=new Date(MESES[q].y,MESES[q].m-1,1)}
+  else if(t==="ciclo")a=new Date(CICLO_INI);
+  else a=new Date(h.getFullYear(),h.getMonth(),1);
+  if(a<CICLO_INI)a=new Date(CICLO_INI);return{a,b,t}}
+function rangoActual(){if(!S.rango2)S.rango2=atajo("mes");return S.rango2}
+// parte el rango en tramos por mes y marca cuáles se pueden comparar
+function tramos(a,b){const out=[];let d=new Date(a.getFullYear(),a.getMonth(),1);
+  while(d<=b){const k=MES_IDX[d.getFullYear()+"_"+String(d.getMonth()+1).padStart(2,"0")];if(k!=null){const M=MESES[k];
+      const d1=(a.getFullYear()===M.y&&a.getMonth()+1===M.m)?a.getDate():1,d2=(b.getFullYear()===M.y&&b.getMonth()+1===M.m)?b.getDate():M.days;
+      const full=d1===1&&d2===M.days,diario=diasCargados(M.key).size>0;out.push({k,M,d1,d2,full,diario,ok:diario||full})}
+    d=new Date(d.getFullYear(),d.getMonth()+1,1)}return out}
+function sumaDias(mk,sede,d1,d2){const dias=(S.diario[mk]||{}).dias||{};let s=0;for(let d=d1;d<=d2;d++){const day=dias[String(d).padStart(2,"0")];if(!day)continue;if(sede==="TOTAL"){for(const x in day)s+=day[x][1]||0}else s+=(day[sede]||[0,0])[1]||0}return s}
+function curTramo(t,sede){if(t.full){const v=calc(sede,t.k).ventas;if(v!=null)return v;if(!t.diario)return null}return sumaDias(t.M.key,sede,t.d1,t.d2)}
+function calcRango(sede){const{a,b}=rangoActual();const fin=new Date(Math.min(b,ultimoDisponible()));const ts=fin<a?[]:tramos(a,fin);
+  let cur=0,prev=0;const fuera=[];for(const t of ts){if(!t.ok){fuera.push(t);continue}const c=curTramo(t,sede);if(c==null){fuera.push(t);continue}cur+=c;prev+=antMes(t.k,sede,t.d2)-antMes(t.k,sede,t.d1-1)}
+  return{cur,prev,fin,ts,fuera}}
+function viewComparacion(){
+  const r=rangoActual(),corto=n=>n.replace(/^Sede /,"");
+  const sedeBtns=[["TOTAL","Total ITCA"],...SEDES].map(([k,n])=>`<button type="button" data-sede="${k}" aria-pressed="${S.sedeSel===k}">${SW(k)}${corto(n)}</button>`).join("");
+  const at=[["mes","Este mes"],["7","Últimos 7 días"],["q","Este cuatrimestre"],["ciclo","Todo el ciclo"]].map(([k,n])=>`<button type="button" data-cmpat="${k}" aria-pressed="${r.t===k}">${n}</button>`).join("");
+  const nomSel=S.sedeSel==="TOTAL"?"Total ITCA":SEDE_NOMBRE[S.sedeSel],R=calcRango(S.sedeSel),vacio=R.fin<r.a;
+  const d=R.cur-R.prev,pct=R.prev?Math.round(d/R.prev*100):null,cls=vacio?"":d>=0?"ok":"bad";
+  const rangoTxt=vacio?"":(r.a.getTime()===R.fin.getTime()?`El ${fDL(r.a)}`:`Del ${fDL(r.a)} al ${fDL(R.fin)}`);
+  const head=vacio?`Todavía no hay datos cargados para esas fechas.`:`${rangoTxt}: <b>${fInt(R.cur)}</b> ventas contra <b>${fInt(R.prev)}</b> del año pasado en las mismas fechas (${pct==null?"—":(d>=0?"+":"")+pct+"%"}).`;
+  const avisos=[];if(!vacio&&r.b>R.fin)avisos.push(`Este año hay datos cargados hasta el ${fDL(R.fin)}, así que se compara hasta esa fecha.`);
+  if(R.fuera.length)avisos.push(`${R.fuera.map(t=>MES_LARGO[t.M.lbl]).join(", ")} no ${R.fuera.length>1?"tienen":"tiene"} carga día por día: solo se puede comparar el mes completo, así que esos días quedaron afuera.`);
+  const filas=[...SEDES,["TOTAL","Total ITCA"]].map(([s,n])=>{const x=calcRango(s),dd=x.cur-x.prev,p=x.prev?Math.round(dd/x.prev*100):null;
+    return `<tr class="sc${s==="TOTAL"?" bw":""}" style="--sc:${SCOL(s)}"><th scope="row">${SW(s)}${esc(n)}</th><td><b>${fInt(x.cur)}</b></td><td>${fInt(x.prev)}</td><td class="${dd>=0?"h-ok":"h-bad"}">${dd>0?"+":""}${fInt(dd)}</td><td class="${dd>=0?"h-ok":"h-bad"}">${p==null?"—":(dd>=0?"+":"")+p+"%"}</td></tr>`}).join("");
+  return `<section><div class="sec-head"><h2>Comparación con el año pasado</h2></div>
+    <div class="step panel cmp-ctrl"><div class="fields">
+      <div class="field"><label for="cmp-desde">Desde</label><input type="date" id="cmp-desde" data-cmp="a" value="${isoD(r.a)}" min="${isoD(CICLO_INI)}" max="${isoD(CICLO_FIN)}"></div>
+      <div class="field"><label for="cmp-hasta">Hasta</label><input type="date" id="cmp-hasta" data-cmp="b" value="${isoD(r.b)}" min="${isoD(CICLO_INI)}" max="${isoD(CICLO_FIN)}"></div></div>
+      <div class="seg" role="group" aria-label="Atajos">${at}</div></div>
+    <div class="headline ${cls}"><span class="s-badge ${cls}">${vacio?"Sin datos":d>=0?"Arriba":"Abajo"}</span><p>${esc(nomSel)} · ${head}</p></div>
+    ${avisos.length?`<p class="note" style="margin:0 0 14px">${avisos.join(" ")}</p>`:""}
+    <div class="toolbar"><div class="seg" role="group" aria-label="Sede">${sedeBtns}</div></div>
+    <div class="charts"><div class="chart panel" id="ch-rango"><div class="chart-h"><h3>Ventas acumuladas en el rango · ${esc(nomSel)}</h3></div><div class="cv"></div>
+      <div class="keys"><span><i style="background:${SCOL(S.sedeSel)}"></i>Este año</span><span><i style="background:var(--muted)"></i>Año pasado, mismas fechas</span></div></div></div></section>
+  <section><div class="sec-head"><h2>Por sede · mismas fechas</h2></div><div class="tbl-wrap"><table class="mx heat" style="min-width:560px"><thead><tr><th scope="col" style="text-align:left">Sede</th><th scope="col">Este año</th><th scope="col">Año pasado</th><th scope="col">Diferencia</th><th scope="col">%</th></tr></thead><tbody>${filas}</tbody></table></div></section>
+  <section><div class="sec-head"><h2>Todo el ciclo, mes por mes · ${esc(nomSel)}</h2></div><div class="charts"><div class="chart panel" id="ch-ant-mes"><div class="chart-h"><h3>Ventas por mes · este año vs. año pasado</h3></div><div class="cv"></div>
+      <div class="keys"><span><i style="background:${SCOL(S.sedeSel)}"></i>Este año</span><span><i style="background:var(--muted)"></i>Año pasado</span></div></div></div></section>`}
+function drawRango(){const box=document.getElementById("ch-rango");if(!box)return;const cv=box.querySelector(".cv");const sede=S.sedeSel,col=SCOL(sede);
+  const{a}=rangoActual(),R=calcRango(sede);if(R.fin<a){cv.innerHTML=`<div class="empty">Todavía no hay datos para esas fechas.</div>`;setIns("ch-rango","");return}
+  const days=[];for(let d=new Date(a);d<=R.fin;d.setDate(d.getDate()+1))days.push(new Date(d));
+  const okT=R.ts.filter(t=>!R.fuera.includes(t));
+  const cur=[],prev=[];let c=0,pv=0;
+  for(const d of days){const k=MES_IDX[d.getFullYear()+"_"+String(d.getMonth()+1).padStart(2,"0")],M=MESES[k],t=okT.find(x=>x.k===k);
+    if(t){pv+=antDia(k,sede,d.getDate());
+      if(t.full&&!t.diario){if(d.getDate()===M.days)c+=calc(sede,k).ventas||0}
+      else c+=sumaDias(M.key,sede,d.getDate(),d.getDate())}
+    cur.push(c);prev.push(pv)}
+  const n=days.length,w=Math.max(320,cv.clientWidth),h=260,L=44,Rm=14,T=14,B=26;const max=niceMax(Math.max(c,pv,1));
+  const x=k=>n<2?L+(w-L-Rm)/2:L+(w-L-Rm)*k/(n-1),y=v=>T+(h-T-B)*(1-v/max);let s=svgFrame(w,h)+`<g class="grid">`;
+  for(let k=0;k<=4;k++){const v=max*k/4;s+=`<line x1="${L}" x2="${w-Rm}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${fInt(v)}</text>`}s+="</g>";
+  const ticks=Math.min(n,7);for(let t=0;t<ticks;t++){const k=ticks<2?0:Math.round(t*(n-1)/(ticks-1));s+=`<text x="${x(k)}" y="${h-8}" text-anchor="middle">${fD(days[k])}</text>`}
+  const path=arr=>arr.map((v,k)=>(k?"L":"M")+x(k).toFixed(1)+" "+y(v).toFixed(1)).join("");
+  s+=`<path d="${path(prev)}" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5"/>`;
+  s+=`<path d="${path(cur)} L${x(n-1)} ${y(0)} L${x(0)} ${y(0)} Z" fill="${col}" opacity=".14"/><path d="${path(cur)}" fill="none" stroke="${col}" stroke-width="2.75" stroke-linejoin="round"/>`;
+  s+=`<circle cx="${x(n-1)}" cy="${y(cur[n-1])}" r="5" fill="${col}" stroke="var(--panel)" stroke-width="2"/><circle cx="${x(n-1)}" cy="${y(prev[n-1])}" r="4" fill="var(--muted)"/>`;
+  s+=`<line x1="${L}" x2="${w-Rm}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)"/></svg>`;cv.innerHTML=s;
+  const st=n<2?w:(w-L-Rm)/(n-1);bindHover(box,cv.querySelector("svg"),w,days.map((d,k)=>({x0:x(k)-st/2,x1:x(k)+st/2,html:`<b>Al ${fDL(d)}</b><br>Este año: ${fInt(cur[k])}<br>Año pasado: ${fInt(prev[k])}`})));
+  const dd=R.cur-R.prev;setIns("ch-rango",`${sede==="TOTAL"?"ITCA":SEDE_NOMBRE[sede]} lleva ${fInt(R.cur)} ventas en el rango: ${dd===0?"igual que":dd>0?`${fInt(dd)} más que`:`${fInt(-dd)} menos que`} el año pasado en las mismas fechas (${fInt(R.prev)}).`)}
+/* ---------- comparación con el año pasado ---------- */
+function mkAnterior(i){const M=MESES[i];return (M.y-1)+"_"+String(M.m).padStart(2,"0")}
+function antDia(i,sede,d){const day=(ANTERIOR[mkAnterior(i)]||{})[String(d).padStart(2,"0")];if(!day)return 0;if(sede==="TOTAL"){let t=0;for(const k in day)t+=day[k];return t}return day[sede]||0}
+function antMes(i,sede,hasta){const M=MESES[i];let t=0;for(let d=1;d<=Math.min(hasta==null?M.days:hasta,M.days);d++)t+=antDia(i,sede,d);return t}
+function ultimoCargado(mk){const c=diasCargados(mk);return c.size?Math.max(...c):0}
+function drawAnterior(){
+  const sede=S.sedeSel,i=defaultMes(),M=MESES[i],col=SCOL(sede),nom=sede==="TOTAL"?"ITCA":SEDE_NOMBRE[sede],ml=MES_LARGO[M.lbl];
+  // 1) acumulado día a día
+  (function(){const box=document.getElementById("ch-ant-dia");if(!box)return;const cv=box.querySelector(".cv");
+    const prev=[];let a=0;for(let d=1;d<=M.days;d++){a+=antDia(i,sede,d);prev.push(a)}
+    const doc=S.diario[M.key]||{},dias=doc.dias||{},ult=ultimoCargado(M.key);const cur=[];let c=0;
+    for(let d=1;d<=ult;d++){const day=dias[String(d).padStart(2,"0")];if(day){if(sede==="TOTAL"){for(const k in day)c+=day[k][1]||0}else c+=(day[sede]||[0,0])[1]||0}cur.push(c)}
+    const w=Math.max(320,cv.clientWidth),h=250,L=44,R=14,T=14,B=26;const max=niceMax(Math.max(prev[prev.length-1]||0,cur[cur.length-1]||0,1));
+    const x=d=>L+(w-L-R)*(d-1)/(M.days-1),y=v=>T+(h-T-B)*(1-v/max);let s=svgFrame(w,h)+`<g class="grid">`;
+    for(let k=0;k<=4;k++){const v=max*k/4;s+=`<line x1="${L}" x2="${w-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${fInt(v)}</text>`}s+="</g>";
+    [1,5,10,15,20,25,M.days].forEach(d=>{s+=`<text x="${x(d)}" y="${h-8}" text-anchor="middle">${d}</text>`});
+    const path=arr=>arr.map((v,k)=>(k?"L":"M")+x(k+1).toFixed(1)+" "+y(v).toFixed(1)).join("");
+    s+=`<path d="${path(prev)}" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5"/>`;
+    if(cur.length){s+=`<path d="${path(cur)} L${x(cur.length)} ${y(0)} L${x(1)} ${y(0)} Z" fill="${col}" opacity=".14"/><path d="${path(cur)}" fill="none" stroke="${col}" stroke-width="2.75" stroke-linejoin="round"/>`;
+      const n=cur.length;s+=`<circle cx="${x(n)}" cy="${y(cur[n-1])}" r="5" fill="${col}" stroke="var(--panel)" stroke-width="2"/><circle cx="${x(n)}" cy="${y(prev[n-1])}" r="4" fill="var(--muted)"/>`}
+    s+=`<line x1="${L}" x2="${w-R}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)"/></svg>`;cv.innerHTML=s;
+    const st=(w-L-R)/(M.days-1);bindHover(box,cv.querySelector("svg"),w,Array.from({length:M.days},(_,k)=>({x0:x(k+1)-st/2,x1:x(k+1)+st/2,html:`<b>Al ${k+1} de ${ml}</b><br>Este año: ${k<cur.length?fInt(cur[k]):"—"}<br>Año pasado: ${fInt(prev[k])}`})));
+    let t;if(!cur.length){t=paceOf(i)===0?`${ml[0].toUpperCase()+ml.slice(1)} todavía no empezó. El año pasado, ${nom} vendió ${fInt(prev[prev.length-1])} en todo el mes.`:`Este mes no tiene carga diaria, así que no se puede comparar día por día. El año pasado, ${nom} vendió ${fInt(prev[prev.length-1])} en todo ${ml}: mirá la comparación por mes.`}
+    else{const n=cur.length,d=cur[n-1]-prev[n-1];t=`Al ${n} de ${ml}, ${nom} lleva ${fInt(cur[n-1])} ventas: ${d===0?"igual que":d>0?`${fInt(d)} más que`:`${fInt(-d)} menos que`} el año pasado a la misma fecha (${fInt(prev[n-1])}).`}
+    setIns("ch-ant-dia",t)})();
+  // 2) por mes
+  (function(){const box=document.getElementById("ch-ant-mes");if(!box)return;const cv=box.querySelector(".cv");
+    const rows=MESES.map((m,k)=>({m,cur:calc(sede,k).ventas,prev:antMes(k,sede)}));const max=niceMax(Math.max(...rows.map(r=>Math.max(r.cur||0,r.prev||0)),1));
+    const w=Math.max(320,cv.clientWidth),h=250,L=44,R=8,T=12,B=26,bw=(w-L-R)/12,y=v=>T+(h-T-B)*(1-v/max);let s=svgFrame(w,h)+`<g class="grid">`;
+    for(let k=0;k<=4;k++){const v=max*k/4;s+=`<line x1="${L}" x2="${w-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${fInt(v)}</text>`}s+="</g>";
+    const items=[];rows.forEach((r,k)=>{const x0=L+k*bw,gw=Math.min(bw*.8,64),b1=gw/2-1,xs=x0+(bw-gw)/2;
+      s+=`<rect x="${xs}" y="${y(r.prev)}" width="${b1}" height="${y(0)-y(r.prev)}" rx="2" fill="var(--muted)" opacity=".55"/>`;
+      if(r.cur!=null)s+=`<rect x="${xs+b1+2}" y="${y(r.cur)}" width="${b1}" height="${Math.max(0,y(0)-y(r.cur))}" rx="2" fill="${col}"/>`;
+      s+=`<text x="${x0+bw/2}" y="${h-8}" text-anchor="middle" style="${k===i?"fill:var(--ink);font-weight:700":""}">${r.m.lbl}</text>`;
+      items.push({x0,x1:x0+bw,html:`<b>${r.m.lbl}</b><br>Este año: ${fInt(r.cur)}${r.m.key===todayKey?" (en curso)":""}<br>Año pasado: ${fInt(r.prev)}`})});
+    s+=`<line x1="${L}" x2="${w-R}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)"/></svg>`;cv.innerHTML=s;bindHover(box,cv.querySelector("svg"),w,items);
+    // en lo que va del ciclo, a la misma fecha
+    const hoyIdx=MES_IDX[todayKey];let curT=0,prevT=0,algo=false;
+    for(let k=0;k<=(hoyIdx==null?11:hoyIdx);k++){const c=calc(sede,k).ventas;if(c!=null){curT+=c;algo=true}
+      if(MESES[k].key===todayKey){const ult=ultimoCargado(todayKey)||today.getDate();prevT+=antMes(k,sede,ult)}else prevT+=antMes(k,sede)}
+    const d=curT-prevT;setIns("ch-ant-mes",algo?`En lo que va del ciclo, ${nom} lleva ${fInt(curT)} ventas contra ${fInt(prevT)} del año pasado a la misma fecha: ${d>=0?`${fInt(d)} más`:`${fInt(-d)} menos`} (${prevT?(d>=0?"+":"")+Math.round(d/prevT*100)+"%":"—"}).`:"Todavía no hay ventas cargadas en este ciclo.")})()}
 /* ---------- una oración por gráfico ---------- */
 function setIns(id,txt){const b=document.getElementById(id);if(!b)return;let p=b.querySelector(".insight");if(!p){p=document.createElement("p");p.className="insight";b.appendChild(p)}p.textContent=txt||"";p.hidden=!txt}
 const nomS=s=>s==="TOTAL"?"ITCA en total":SEDE_NOMBRE[s];
@@ -877,9 +1006,9 @@ function viewUsuarios(){
       <div class="row-btns">${S.editUser?`<button type="button" class="btn" data-ucancel="1">Cancelar</button>`:""}<button type="submit" class="btn primary" ${S.saving?"disabled":""}>${S.saving?"Guardando…":"Guardar"}</button></div></form></section>`}
 async function guardarUsuarios(lista,okMsg){S.saving=true;render();try{const est=estadoActual();est.usuarios=lista;await publicar(est);S.usuarios=lista;S.editUser=null;S.msg={c:"ok",t:okMsg}}catch(e){S.msg={c:"bad",t:errGuardar(e)}}S.saving=false;render()}
 function aplicarEstado(e,v){if(!e)return;S.obj=e.obj||S.obj;S.real=e.real||null;S.diario=e.diario||{};S.cargas=e.cargas||[];S.version=v||null}
-async function publicar(est){
+async function publicar(est,nota){
   if(!S.cred)throw{code:"not_writer"};
-  let r;try{r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({accion:"guardar",usuario:S.cred.u,clave:S.cred.p,base:S.version||null,estado:est})})}catch(err){throw{code:"red"}}
+  let r;try{r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({accion:"guardar",usuario:S.cred.u,clave:S.cred.p,base:S.version||null,estado:est,nota:nota||""})})}catch(err){throw{code:"red"}}
   const j=await r.json().catch(()=>({}));
   if(r.status===401){salir();throw{code:"not_writer"}}
   if(r.status===409){aplicarEstado(j.estado,j.version);throw{code:"conflict"}}
@@ -903,7 +1032,7 @@ async function guardar(){
     for(const k of all){let last=[0,0];Object.keys(cortes).sort().forEach(d=>{const c=cortes[d][k];if(!c)return;dias[d]=dias[d]||{};dias[d][k]=[Math.max(0,c[0]-last[0]),Math.max(0,c[1]-last[1])];last=c})}
     est.diario[mk]={cortes,dias,at:new Date().toISOString()};
     est.cargas=[{at:new Date().toISOString(),archivo:U.fileName,meses:[mk],hasta},...est.cargas].slice(0,30);
-    await publicar(est);
+    await publicar(est,`Reporte ${U.fileName} · del 1 al ${hasta} de ${MES_LARGO[M.lbl]}`);
     S.up=null;S.msg={c:"ok",t:`Listo: se actualizó ${MES_LARGO[M.lbl]} hasta el ${hasta}.`}}
   catch(e){S.msg={c:"bad",t:errGuardar(e)}}
   S.saving=false;render()}
@@ -912,15 +1041,55 @@ function editCell(inp){const[sede,mk,field]=inp.dataset.edit.split("|");const ra
   if(raw!==""&&!isFinite(v))return;const cur=realOf(sede,MES_IDX[mk]);if((cur&&cur[field]!=null?cur[field]:null)===v)return;
   S.real=S.real||{sedes:{}};S.real.sedes=S.real.sedes||{};S.real.sedes[sede]=S.real.sedes[sede]||{};S.real.sedes[sede][mk]={...(S.real.sedes[sede][mk]||{}),[field]:v};S.dirty=true}
 async function terminarEdicion(){if(!S.dirty){S.editar=false;S.msg=null;render();return}
-  S.saving=true;render();try{await publicar(estadoActual());S.dirty=false;S.editar=false;S.msg={c:"ok",t:"Cambios guardados."}}catch(e){S.msg={c:"bad",t:errGuardar(e)}}S.saving=false;render()}
+  S.saving=true;render();try{await publicar(estadoActual(),"Corrección a mano en la tabla");S.dirty=false;S.editar=false;S.msg={c:"ok",t:"Cambios guardados."}}catch(e){S.msg={c:"bad",t:errGuardar(e)}}S.saving=false;render()}
+
+/* ---------- respaldo: historial de versiones y descarga en Excel ---------- */
+async function api(body){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...body,usuario:S.cred&&S.cred.u,clave:S.cred&&S.cred.p})});const j=await r.json().catch(()=>({}));if(r.status===401){salir();throw{code:"not_writer"}}if(!r.ok)throw{code:"error"};return j}
+async function cargarHistorial(){S.hist="cargando";try{const j=await api({accion:"historial"});S.hist=j.historial||[];S.histActual=j.actual}catch(e){S.hist=[];S.msg={c:"bad",t:errGuardar(e)}}if(S.view==="respaldo")render()}
+function viewRespaldo(){
+  if(!puedeEditar())return `<section><div class="state">Solo los analistas de Marketing pueden ver el respaldo. Tocá <b>Ingresar</b> arriba.</div></section>`;
+  if(S.hist==null)setTimeout(cargarHistorial,0);
+  const fmt=iso=>new Date(iso).toLocaleString("es-AR",{dateStyle:"short",timeStyle:"short"});
+  const lista=S.hist==null||S.hist==="cargando"?`<p class="help">Cargando el historial…</p>`:!S.hist.length?`<p class="help">Todavía no hay versiones guardadas. Se van a ir guardando cada vez que alguien cargue un reporte o corrija un dato.</p>`:
+    `<div class="hist">${S.hist.map((x,k)=>`<div><span><b>${fmt(x.at)}</b> · ${esc(x.por)}<br><small>${esc(x.nota||"")}</small></span><span class="row-btns">${x.v===S.histActual?`<span class="chip ok">Versión actual</span>`:`<button type="button" class="btn" data-restaurar="${x.v}" ${S.saving?"disabled":""}>${S.confirmRest===x.v?"Tocá de nuevo para confirmar":"Volver a esta versión"}</button>`}</span></div>`).join("")}</div>`;
+  return `<section><div class="sec-head"><h2>Respaldo</h2></div>
+    ${S.msg?`<p class="note ${S.msg.c}">${esc(S.msg.t)}</p>`:""}
+    <div class="step panel"><div class="step-h"><h3>Descargar todos los datos</h3></div><p class="help">Baja un Excel con la hoja de Objetivos 2027 por sede, el detalle día por día y el historial de cargas. Conviene guardarlo en el Drive de vez en cuando.</p>
+      <div><button type="button" class="btn primary" data-action="excel">Descargar respaldo en Excel</button></div></div>
+    <div class="step panel"><div class="step-h"><h3>Versiones guardadas</h3></div><p class="help">Cada vez que alguien guarda, queda una copia. Si se cargó algo mal, podés volver a una versión anterior: la versión de ahora también queda guardada, así que no se pierde nada.</p>${lista}</div></section>`}
+async function restaurar(v){S.saving=true;S.confirmRest=null;render();
+  try{const j=await api({accion:"restaurar",version:v});aplicarEstado(j.estado,j.version);S.msg={c:"ok",t:"Listo: se volvió a esa versión. Ya lo ven todos."};S.hist=null}catch(e){S.msg={c:"bad",t:errGuardar(e)}}
+  S.saving=false;render()}
+function descargarExcel(){
+  if(!window.XLSX){S.msg={c:"bad",t:"No se pudo cargar el generador de Excel. Volvé a abrir la página."};render();return}
+  const wb=XLSX.utils.book_new();const ix=MESES.map((m,k)=>k);
+  // hoja Objetivos 2027, igual que el Excel original
+  const filas=[["SEDE","",...MESES.map(m=>m.lbl+" "+String(m.y).slice(2)),"TOTAL"]];
+  const r1=v=>v==null||!isFinite(v)?"":Math.round(v*100)/100,pc=v=>v==null||!isFinite(v)?"":Math.round(v*1000)/1000;
+  for(const[s,n]of[...SEDES,["TOTAL","TOTAL ITCA"]]){const cs=ix.map(k=>calc(s,k)),a=aggSel(s,ix);
+    const fila=(lbl,f,fmt)=>[lbl===filas.length?"":"",lbl,...cs.map(c=>fmt(f(c))),fmt(f(a))];
+    const bloque=[["Datos deseados",c=>c.des,r1],["Datos brindados",c=>c.datos,r1],["% alcance datos",c=>c.alcD,pc],["Objetivo ventas",c=>c.objV,r1],["Ventas logrado",c=>c.ventas,r1],["% alcance de ventas",c=>c.alcV,pc],["Conversión estimada",c=>c.convEst,pc],["Conversión real",c=>c.convReal,pc]];
+    bloque.forEach(([l,f,fm],k)=>filas.push([k===0?n:"",l,...cs.map(c=>fm(f(c))),fm(f(a))]));filas.push([])}
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(filas),"Objetivos 2027");
+  // detalle por día
+  const dia=[["Fecha","Sede","Datos del día","Ventas del día","Datos acumulados","Ventas acumuladas"]];
+  for(const mk of Object.keys(S.diario||{}).sort()){const M=MESES[MES_IDX[mk]];if(!M)continue;const d=S.diario[mk]||{},dias=d.dias||{},cortes=d.cortes||{};
+    for(const dd of Object.keys(dias).sort())for(const[s,n]of SEDES){const v=dias[dd][s];if(!v)continue;const c=(cortes[dd]||{})[s]||["",""];dia.push([`${+dd}/${M.m}/${M.y}`,n,v[0],v[1],c[0],c[1]])}}
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(dia),"Por día");
+  const cg=[["Fecha de carga","Archivo","Mes","Hasta el día"]];(S.cargas||[]).forEach(c=>cg.push([new Date(c.at).toLocaleString("es-AR"),c.archivo,(c.meses||[]).map(k=>MES_LARGO[MESES[MES_IDX[k]]?.lbl]||k).join(", "),c.hasta||""]));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(cg),"Cargas");
+  const hoy=new Date();XLSX.writeFile(wb,`Respaldo Objetivos 2027 ITCA ${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,"0")}-${String(hoy.getDate()).padStart(2,"0")}.xlsx`)}
 
 /* ---------- eventos ---------- */
 document.addEventListener("click",e=>{
   if((S.calOpen||S.diaOpen)&&!e.target.closest(".hasta-dd")){S.calOpen=false;S.diaOpen=false;render()}
-  const t=e.target.closest("[data-upw],[data-ucancel],[data-udel],[data-diaopen],[data-diasel],[data-gocargar],[data-calopen],[data-hasta],[data-tmodo],[data-scroll],[data-mes],[data-todos],[data-more],[data-sede],[data-metric],[data-tsede],[data-action]");if(!t)return;
+  const t=e.target.closest("[data-cmpat],[data-restaurar],[data-upw],[data-ucancel],[data-udel],[data-diaopen],[data-diasel],[data-gocargar],[data-calopen],[data-hasta],[data-tmodo],[data-scroll],[data-mes],[data-todos],[data-more],[data-sede],[data-metric],[data-tsede],[data-action]");if(!t)return;
   if(t.dataset.hasta!=null){S.perHasta=+t.dataset.hasta;S.calOpen=false;render();return}
   if(t.dataset.diasel!=null){const[w,d]=t.dataset.diasel.split("|");const mk=MESES[defaultMes()].key;const cur=S.rango&&S.rango.mk===mk?S.rango:null;const M=MESES[defaultMes()];const base=cur||(()=>{const c=[...diasCargados(mk)].sort((a,b)=>b-a)[0]||Math.max(ultimoDia(M),1);return{mk,desde:c,hasta:c}})();
     S.rango={...base,[w]:+d};if(w==="desde"&&S.rango.hasta<S.rango.desde)S.rango.hasta=+d;if(w==="hasta"&&S.rango.desde>S.rango.hasta)S.rango.desde=+d;S.diaOpen=false;render();return}
+  if(t.dataset.cmpat!=null){S.rango2=atajo(t.dataset.cmpat);render();return}
+  if(t.dataset.restaurar!=null){const v=t.dataset.restaurar;if(S.confirmRest!==v){S.confirmRest=v;render();return}restaurar(v);return}
+  if(t.dataset.action==="excel"){descargarExcel();return}
   if(t.dataset.upw!=null){S.editUser=t.dataset.upw;S.msg=null;render();return}
   if(t.dataset.ucancel!=null){S.editUser=null;render();return}
   if(t.dataset.udel!=null){const u=t.dataset.udel;if(S.confirmDel!==u){S.confirmDel=u;S.msg={c:"",t:`Tocá "Borrar" de nuevo para confirmar que querés borrar a ${u}.`};render();return}S.confirmDel=null;guardarUsuarios((S.usuarios||[]).filter(z=>z.u!==u),`Usuario ${u} borrado.`);return}
@@ -951,7 +1120,8 @@ document.addEventListener("submit",async e=>{
     const lista=JSON.parse(JSON.stringify(S.usuarios||[]));const sal=nuevaSal(),h=await hashPw(p1,sal);
     if(S.editUser){const x=lista.find(z=>z.u===S.editUser);if(x){x.s=sal;x.h=h}guardarUsuarios(lista,`Contraseña de ${S.editUser} actualizada.`)}
     else{const u=$("#nu-u").value.trim();if(!u){return}if(lista.some(z=>norm(z.u)===norm(u))){S.msg={c:"bad",t:"Ese usuario ya existe."};render();return}lista.push({u,s:sal,h});guardarUsuarios(lista,`Usuario ${u} creado.`)}}});
-document.addEventListener("change",e=>{const t=e.target;const U=S.up;
+document.addEventListener("change",e=>{
+  if(e.target.dataset&&e.target.dataset.cmp){const r=rangoActual(),v=parseD(e.target.value);if(v){let a=e.target.dataset.cmp==="a"?v:r.a,b=e.target.dataset.cmp==="b"?v:r.b;if(a>b){const z=a;a=b;b=z}if(a<CICLO_INI)a=new Date(CICLO_INI);if(b>CICLO_FIN)b=new Date(CICLO_FIN);S.rango2={a,b,t:null};render()}return}const t=e.target;const U=S.up;
   if(t.dataset.per){if(t.dataset.per==="mes"){S.perMes=+t.value;S.perHasta=null}else S.perHasta=+t.value;render();return}
   if(t.id==="file"&&t.files[0])readFile(t.files[0]);
   else if(t.dataset.edit)editCell(t);
@@ -963,7 +1133,7 @@ document.addEventListener("change",e=>{const t=e.target;const U=S.up;
 document.addEventListener("dragover",e=>{const d=e.target.closest&&e.target.closest("#drop");if(d){e.preventDefault();d.classList.add("over")}});
 document.addEventListener("dragleave",e=>{const d=e.target.closest&&e.target.closest("#drop");if(d)d.classList.remove("over")});
 document.addEventListener("drop",e=>{const d=e.target.closest&&e.target.closest("#drop");if(d){e.preventDefault();d.classList.remove("over");const f=e.dataTransfer.files[0];if(f)readFile(f)}});
-function route(){const h=(location.hash||"").slice(1);S.view=["resumen","tabla","cargar","usuarios"].includes(h)?h:"resumen";S.msg=null;render()}
+function route(){const h=(location.hash||"").slice(1);S.view=["resumen","tabla","comparacion","cargar","respaldo"].includes(h)?h:"resumen";if(S.view==="respaldo")S.hist=null;S.msg=null;render()}
 window.addEventListener("hashchange",route);
 document.addEventListener("toggle",e=>{if(e.target.id==="more-charts"){S.moreCharts=e.target.open;if(e.target.open)drawCharts()}},true);
 let rw=0;new ResizeObserver(()=>{const w=document.body.clientWidth;if(Math.abs(w-rw)>20&&S.view==="resumen"&&S.obj){rw=w;selIdx().length>1?drawCompare():drawCharts()}}).observe(document.body);
